@@ -11,7 +11,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ## [0.0.1]SNAPSHOT - 2017-03-06
 
 ### Added
-- Implemented resources: 
+- Implemented resources for JTS operations: 
   - Buffer 
   - Envelope 
   - Centroid 
