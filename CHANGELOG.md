@@ -6,6 +6,8 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ## [Unreleased]
 ### Added
 - More resources
+- Geometry validations
+- Asynchronous tasks
 
 
 ## [0.0.1]SNAPSHOT - 2017-03-06
