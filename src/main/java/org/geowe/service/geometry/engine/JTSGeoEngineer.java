@@ -76,11 +76,11 @@ public class JTSGeoEngineer implements GeoEngineer {
 	 */
 	@Override
 	public String calculateIntersection(OperationData operationData) {
-
+		double tolerance = -0.00001;
 		final Geometry sourceGeometry = GeometryCombiner.combine(helper.toGeometries(operationData.getSourceData()));
 		final Geometry overlayGeometry = GeometryCombiner.combine(helper.toGeometries(operationData.getOverlayData()));
 		Geometry geomContorno = EnhancedPrecisionOp.intersection(sourceGeometry.buffer(-0.00001),
-				overlayGeometry.buffer(-0.00001));
+				overlayGeometry.buffer(tolerance));
 
 		return geomContorno.toText();
 	}

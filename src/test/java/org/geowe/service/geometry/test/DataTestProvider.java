@@ -15,10 +15,16 @@
  ******************************************************************************/
 package org.geowe.service.geometry.test;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.geowe.service.geometry.FlatGeometryBuilder;
+import org.geowe.service.geometry.engine.JTSGeoEngineerHelper;
 import org.geowe.service.model.FlatGeometry;
 import org.geowe.service.model.OperationData;
 import org.jboss.resteasy.spi.ReaderException;
@@ -35,6 +41,18 @@ public class DataTestProvider {
 	public static final String CRS = "WGS84";
 	public static final String DEFAULT_ID = "default_id";
 
+	
+	public static Geometry getGeom(String wkt) {
+		Geometry geom;
+		try {
+			WKTReader wktReader = new WKTReader();
+			geom = wktReader.read(wkt);
+		} catch (ParseException e) {
+			throw new ReaderException("Error Reading wkt");
+		}
+		return geom;
+	}
+	
 	public static List<FlatGeometry> getThreeEntities() {
 
 		List<FlatGeometry> geoms = new ArrayList<FlatGeometry>();
@@ -52,23 +70,10 @@ public class DataTestProvider {
 	}
 
 	public static FlatGeometry createFlatGeometry(String wkt) {
-		FlatGeometry geom = new FlatGeometry();
-		geom.setWkt(wkt);
-		geom.setCrs(CRS);
-		geom.setId(DEFAULT_ID);
+		FlatGeometry geom = new FlatGeometryBuilder().wkt(wkt).crs(CRS).id(DEFAULT_ID).build();
 		return geom;
 	}
 
-	public static Geometry getGeom(String wkt) {
-		Geometry geom;
-		try {
-			WKTReader wktReader = new WKTReader();
-			geom = wktReader.read(wkt);
-		} catch (ParseException e) {
-			throw new ReaderException("Error Reading wkt");
-		}
-		return geom;
-	}
 
 	public static OperationData getIntersectionData() {
 		OperationData operationData = new OperationData();
@@ -76,6 +81,42 @@ public class DataTestProvider {
 		operationData.setSourceData(new HashSet<FlatGeometry>(getTwoEntities()));
 		operationData.setOverlayData(new HashSet<FlatGeometry>(getThreeEntities()));
 		return operationData;
+	}
+
+	public static OperationData getPolygonsFCIntersectionData() {
+		OperationData operationData = new OperationData();
+		
+		Set<FlatGeometry> source = new HashSet<FlatGeometry>();
+		source.addAll(getPolygonsFromFile("feature-collection-polygons.wkt"));
+		operationData.setSourceData(source);
+		
+		Set<FlatGeometry> overlay = new HashSet<FlatGeometry>();
+		overlay.addAll(getPolygonsFromFile("overlay.wkt"));
+		operationData.setOverlayData(overlay);
+
+		return operationData;
+	}
+	
+	private static Set<FlatGeometry> getPolygonsFromFile(String fileName){
+		JTSGeoEngineerHelper helper = new JTSGeoEngineerHelper();
+		List<String> polygonsWkt = helper.getBasicGeometries(getFile(fileName));
+		Set<FlatGeometry> fGeoms = new HashSet<FlatGeometry>();
+		for(String wkt: polygonsWkt){
+			fGeoms.add(new FlatGeometryBuilder().wkt(wkt).crs(CRS).id(DEFAULT_ID).build());
+		}
+		return fGeoms;
+	}
+	
+	private static String getFile(String fileName) {
+		ClassLoader classLoader = new DataTestProvider().getClass().getClassLoader();
+		File file = new File(classLoader.getResource(fileName).getFile());
+		String result = "";
+		try {
+			result = new String(Files.readAllBytes(file.toPath()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 }

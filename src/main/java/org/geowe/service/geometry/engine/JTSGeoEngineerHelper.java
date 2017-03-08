@@ -70,70 +70,63 @@ public class JTSGeoEngineerHelper {
 		final List<String> elementsWkt = new ArrayList<String>();
 
 		Geometry geomContorno = getGeom(wkt);
-		if (geomContorno != null) {
-			elementsWkt.addAll(getPolygons(geomContorno));
-			elementsWkt.addAll(getLineStrings(geomContorno));
-			elementsWkt.addAll(getPoints(geomContorno));
-			elementsWkt.addAll(getMultiGeometries(geomContorno));
+		
+		if (geomContorno != null && geomContorno.isValid()) {
+			if (geomContorno instanceof Polygon) {
+				elementsWkt.add(geomContorno.toText());
+			} else if (geomContorno instanceof MultiPolygon) {
+				elementsWkt.addAll(getPolygons((MultiPolygon) geomContorno));
+			} else if (geomContorno instanceof GeometryCollection) {
+				elementsWkt.addAll(getMultiGeometries((GeometryCollection) geomContorno));
+			}
 		}
 		return elementsWkt;
 	}
 
-	public List<String> getPolygons(Geometry geom) {
+	public List<String> getPolygons(MultiPolygon geom) {
 		final List<String> polygonsWkt = new ArrayList<String>();
-		if (geom instanceof Polygon) {
-			polygonsWkt.add(geom.toText());
-		} else if (geom instanceof MultiPolygon) {
 
-			final MultiPolygon multiPolygon = (MultiPolygon) geom;
-			for (int i = 0; i < multiPolygon.getNumGeometries(); i++) {
-				final Polygon pol = (Polygon) multiPolygon.getGeometryN(i);
-				polygonsWkt.add(pol.toText());
-			}
+		final MultiPolygon multiPolygon = geom;
+		for (int i = 0; i < multiPolygon.getNumGeometries(); i++) {
+			final Polygon pol = (Polygon) multiPolygon.getGeometryN(i);
+			polygonsWkt.add(pol.toText());
 		}
+
 		return polygonsWkt;
 	}
 
-	public List<String> getLineStrings(Geometry geom) {
+	public List<String> getLineStrings(MultiLineString geom) {
 		final List<String> lineStringsWkt = new ArrayList<String>();
-		if (geom instanceof LineString) {
-			lineStringsWkt.add(geom.toText());
-		} else if (geom instanceof MultiLineString) {
-			final MultiLineString multiLine = (MultiLineString) geom;
-			for (int i = 0; i < multiLine.getNumGeometries(); i++) {
-				final LineString pol = (LineString) multiLine.getGeometryN(i);
-				lineStringsWkt.add(pol.toText());
-			}
+
+		final MultiLineString multiLine = geom;
+		for (int i = 0; i < multiLine.getNumGeometries(); i++) {
+			final LineString pol = (LineString) multiLine.getGeometryN(i);
+			lineStringsWkt.add(pol.toText());
 		}
+
 		return lineStringsWkt;
 	}
 
-	public List<String> getPoints(Geometry geom) {
+	public List<String> getPoints(MultiPoint geom) {
 		final List<String> pointsWkt = new ArrayList<String>();
 
-		if (geom instanceof Point) {
-			pointsWkt.add(geom.toText());
-		} else if (geom instanceof MultiPoint) {
-			final MultiPoint multiPoint = (MultiPoint) geom;
-			for (int i = 0; i < multiPoint.getNumGeometries(); i++) {
-				final Point pol = (Point) multiPoint.getGeometryN(i);
-				pointsWkt.add(pol.toText());
-			}
+		final MultiPoint multiPoint = geom;
+		for (int i = 0; i < multiPoint.getNumGeometries(); i++) {
+			final Point pol = (Point) multiPoint.getGeometryN(i);
+			pointsWkt.add(pol.toText());
 		}
 		return pointsWkt;
 	}
-	
-	public List<String> getMultiGeometries(Geometry geom){
+
+	public List<String> getMultiGeometries(GeometryCollection geom) {
 		final List<String> geomsWkt = new ArrayList<String>();
-		if (geom instanceof GeometryCollection) {
-			
-			final GeometryCollection gc = (GeometryCollection) geom;
-			for (int i = 0; i < gc.getNumGeometries(); i++) {
-				final Geometry geometry = gc.getGeometryN(i);
-				geomsWkt.add(geometry.toText());
-			}
+
+		final GeometryCollection gc =  geom;
+		for (int i = 0; i < gc.getNumGeometries(); i++) {
+			final Geometry geometry = gc.getGeometryN(i);
+			geomsWkt.add(geometry.toText());
 		}
 		return geomsWkt;
 	}
-	
+
 }

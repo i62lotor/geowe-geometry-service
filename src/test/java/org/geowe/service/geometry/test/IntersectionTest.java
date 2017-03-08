@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -61,16 +62,6 @@ public class IntersectionTest {
 		Assert.isTrue(INTERSECTION_WKT.equals(intersectionGeometry.getWkt()));
 	}
 
-	@Test
-	public void intersectionElementsTest() {
-		JtsIntersectionService service = new JtsIntersectionService();
-		Response response = service.getIntersectionElements(DataTestProvider
-				.getIntersectionData());
-		List<String> intersectionGeometries = (List<String>) response.getEntity();
-		log.info("intersection geometries: "+intersectionGeometries.size());
-		
-		Assert.isTrue(response.getStatus() == Status.CREATED.getStatusCode());
-	}
 	
 	@Test
 	public void intersectinPostRequestTest() {
@@ -113,6 +104,34 @@ public class IntersectionTest {
 		response.close();
 		Assert.isTrue(response.getStatus() == Status.BAD_REQUEST
 				.getStatusCode());
+	}
+	
+	@Test
+	public void intersectionPolygonsFeatureCollection(){
+		OperationData opData = DataTestProvider.getPolygonsFCIntersectionData();
+		Response response = target.request().post(
+				Entity.entity(opData, "application/json;charset=UTF-8"));
+
+		String intersectionGeometry = response
+				.readEntity(String.class);
+		log.info(intersectionGeometry);
+		response.close();
+		Assert.isTrue(response.getStatus() == Status.CREATED.getStatusCode());
+	}
+	
+	@Test
+	public void intersectionPolygonsFeatureCollectionElements(){
+		OperationData opData = DataTestProvider.getPolygonsFCIntersectionData();
+		target = restClient.target(SERVICE_URL+"/elements");
+		Response response = target.request().post(
+				Entity.entity(opData,"application/json;charset=UTF-8"));
+
+		List<String> intersectionGeometries = response.readEntity(new GenericType<List<String>>(){});
+		log.info("polígonos de la intersección: "+intersectionGeometries.size());
+		log.info("polígonos de la intersección: "+intersectionGeometries);
+		response.close();
+		Assert.isTrue(response.getStatus() == Status.CREATED.getStatusCode());
+		Assert.isTrue(intersectionGeometries.size() == 7);
 	}
 
 }
