@@ -109,9 +109,10 @@ public class DataTestProvider {
 	
 	private static String getFile(String fileName) {
 		ClassLoader classLoader = new DataTestProvider().getClass().getClassLoader();
-		File file = new File(classLoader.getResource(fileName).getFile());
+		
 		String result = "";
 		try {
+			File file = new File(classLoader.getResource(fileName).getFile());
 			result = new String(Files.readAllBytes(file.toPath()));
 		} catch (IOException e) {
 			e.printStackTrace();
