@@ -113,9 +113,9 @@ public class SymDifferenceTest {
 
 		List<String> differenceGeometries = response.readEntity(new GenericType<List<String>>(){});
 		response.close();
-		log.info("***"+differenceGeometries);
+		log.info("***"+differenceGeometries.size());
 		Assert.isTrue(response.getStatus() == Status.CREATED.getStatusCode());
-		Assert.isTrue(differenceGeometries.size() == 10);
+		Assert.isTrue(differenceGeometries.size() == 13);
 	}
 
 }
