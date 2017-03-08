@@ -6,7 +6,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ BufferTest.class, IntersectionTest.class,
-	UnionTest.class, CentroidTest.class, EnvelopeTest.class })
+	UnionTest.class, CentroidTest.class, EnvelopeTest.class, DifferenceTest.class })
 public class AllGeometryTests {
 
 }
