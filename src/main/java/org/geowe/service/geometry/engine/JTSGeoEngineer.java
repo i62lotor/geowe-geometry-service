@@ -142,6 +142,6 @@ public class JTSGeoEngineer implements GeoEngineer {
 
 	@Override
 	public List<String> calculateSymDifferenceElements(OperationData operationData, double tolerance) {
-		return helper.getBasicGeometries(calculateDifference(operationData, tolerance));
+		return helper.getBasicGeometries(calculateSymDifference(operationData, tolerance));
 	}
 }
