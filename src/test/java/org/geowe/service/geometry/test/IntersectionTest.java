@@ -132,5 +132,18 @@ public class IntersectionTest {
 		Assert.isTrue(response.getStatus() == Status.CREATED.getStatusCode());
 		Assert.isTrue(intersectionGeometries.size() == 7);
 	}
+	
+	@Test
+	public void intersectionLinesFeatureCollectionElements(){
+		OperationData opData = DataTestProvider.getLinesFCIntersectionData();
+		target = restClient.target(SERVICE_URL+"/elements");
+		Response response = target.queryParam("tolerance", 0.00001).request().post(
+				Entity.entity(opData,"application/json;charset=UTF-8"));
+
+		List<String> intersectionGeometries = response.readEntity(new GenericType<List<String>>(){});
+		response.close();
+		Assert.isTrue(response.getStatus() == Status.CREATED.getStatusCode());
+		Assert.isTrue(intersectionGeometries.size() == 2);
+	}
 
 }

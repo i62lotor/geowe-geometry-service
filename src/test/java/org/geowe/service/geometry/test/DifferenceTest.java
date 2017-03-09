@@ -23,6 +23,8 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.geowe.service.geometry.engine.GeoEngineer;
+import org.geowe.service.geometry.engine.JTSGeoEngineer;
 import org.geowe.service.model.FlatGeometry;
 import org.geowe.service.model.OperationData;
 import org.geowe.service.model.error.ErrorEntity;
@@ -117,4 +119,17 @@ public class DifferenceTest {
 		Assert.isTrue(differenceGeometries.size() == 10);
 	}
 
+	@Test
+	public void differenceLinesFeatureCollectionElements(){
+		OperationData opData = DataTestProvider.getLinesFCIntersectionData();
+		target = restClient.target(SERVICE_URL+"/elements");
+		Response response = target.queryParam("tolerance", 0.0001).request().post(
+				Entity.entity(opData,"application/json;charset=UTF-8"));
+
+		List<String> differenceGeometries = response.readEntity(new GenericType<List<String>>(){});
+		response.close();
+		Assert.isTrue(response.getStatus() == Status.CREATED.getStatusCode());
+		Assert.isTrue(differenceGeometries.size() == 3);
+	}
+	
 }

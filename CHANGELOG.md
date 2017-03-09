@@ -15,6 +15,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Implemented resources for JTS operations:
 	- Difference
 	- Symetric Difference 
+- Added support for Points and LineStrings in intersection, Difference and Symetric Difference operations. Beware with tolerance to obtain best results
 
 ## [0.0.1]SNAPSHOT - 2017-03-06
 

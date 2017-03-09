@@ -87,23 +87,25 @@ public class DataTestProvider {
 		OperationData operationData = new OperationData();
 		
 		Set<FlatGeometry> source = new HashSet<FlatGeometry>();
-		source.addAll(getPolygonsFromFile("feature-collection-polygons.wkt"));
+		source.addAll(getGeomsFromFile("feature-collection-polygons.wkt"));
 		operationData.setSourceData(source);
 		
 		Set<FlatGeometry> overlay = new HashSet<FlatGeometry>();
-		overlay.addAll(getPolygonsFromFile("overlay.wkt"));
+		overlay.addAll(getGeomsFromFile("overlay.wkt"));
 		operationData.setOverlayData(overlay);
 
 		return operationData;
 	}
 	
-	private static Set<FlatGeometry> getPolygonsFromFile(String fileName){
+	private static Set<FlatGeometry> getGeomsFromFile(String fileName){
 		JTSGeoEngineerHelper helper = new JTSGeoEngineerHelper();
-		List<String> polygonsWkt = helper.getBasicGeometries(getFile(fileName));
+		List<String> geomsWkt = helper.getBasicGeometries(getFile(fileName));
 		Set<FlatGeometry> fGeoms = new HashSet<FlatGeometry>();
-		for(String wkt: polygonsWkt){
+		for(String wkt: geomsWkt){
 			fGeoms.add(new FlatGeometryBuilder().wkt(wkt).crs(CRS).id(DEFAULT_ID).build());
 		}
+		System.out.println("Num. Geometrías recuperadas del fichero: "+fGeoms.size());
+		System.out.println("Geometrías recuperadas del fichero: "+fGeoms);
 		return fGeoms;
 	}
 	
@@ -118,6 +120,20 @@ public class DataTestProvider {
 			e.printStackTrace();
 		}
 		return result;
+	}
+
+	public static OperationData getLinesFCIntersectionData() {
+		OperationData operationData = new OperationData();
+		
+		Set<FlatGeometry> source = new HashSet<FlatGeometry>();
+		source.addAll(getGeomsFromFile("feature-collection-lines.wkt"));
+		operationData.setSourceData(source);
+		
+		Set<FlatGeometry> overlay = new HashSet<FlatGeometry>();
+		overlay.addAll(getGeomsFromFile("overlay.wkt"));
+		operationData.setOverlayData(overlay);
+
+		return operationData;
 	}
 
 }
