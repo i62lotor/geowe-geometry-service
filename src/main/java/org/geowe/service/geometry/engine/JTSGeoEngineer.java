@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.geowe.service.geometry.engine;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -180,4 +181,23 @@ public class JTSGeoEngineer implements GeoEngineer {
 	public List<String> calculateSymDifferenceElements(OperationData operationData, double tolerance) {
 		return helper.getBasicGeometries(calculateSymDifference(operationData, tolerance));
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.geowe.service.geometry.engine.GeoEngineer#calculateIntersect(org.geowe.service.model.OperationData, double)
+	 */
+	@Override
+	public List<FlatGeometry> calculateIntersectedElements(OperationData operationData, double tolerance) {
+		final List<FlatGeometry> intersectedElements = new ArrayList<FlatGeometry>();
+		JTSGeoEngineerHelper helper = new JTSGeoEngineerHelper();
+		for (final FlatGeometry flatGeometry : operationData.getSourceData()) {
+			if (helper.intersects(flatGeometry, operationData.getOverlayData(), tolerance)) {
+				intersectedElements.add(flatGeometry);
+			}
+		}
+
+		return intersectedElements;
+	}
+	
+	
 }

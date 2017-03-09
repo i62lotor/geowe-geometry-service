@@ -120,7 +120,7 @@ public interface GeoEngineer {
 	List<String> calculateDifferenceElements(OperationData operationData, double tolerance);
 
 	/**
-	 * Calculates the outline geometry resulting from the Symetric Difference of
+	 * Calculates the outline geometry resulting from the Symmetric Difference of
 	 * source and overlay data in entities.
 	 * 
 	 * @param entities:
@@ -132,7 +132,7 @@ public interface GeoEngineer {
 	String calculateSymDifference(OperationData operationData, double tolerance);
 
 	/**
-	 * calculates an array of geometries resulting from the Symetric Difference
+	 * calculates an array of geometries resulting from the Symmetric Difference
 	 * of source and overlay data in entities.
 	 * 
 	 * @param entities:
@@ -142,5 +142,16 @@ public interface GeoEngineer {
 	 * @return A Collection of WKT strings
 	 */
 	List<String> calculateSymDifferenceElements(OperationData operationData, double tolerance);
+
+	/**
+	 * Calculates the geometries in source that intersects with overlay data, sent in the body
+	 * 
+	 * @param operationData
+	 *            Operation data to calculate intersection
+	 * @param tolerance:
+	 *            tolerance to apply.
+	 * @return A Collection of WKT strings
+	 */
+	List<FlatGeometry> calculateIntersectedElements(OperationData operationData, double tolerance);
 
 }
