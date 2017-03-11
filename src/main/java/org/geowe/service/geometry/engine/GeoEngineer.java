@@ -154,4 +154,18 @@ public interface GeoEngineer {
 	 */
 	List<FlatGeometry> calculateIntersectedElements(OperationData operationData, double tolerance);
 
+	/**
+	 * Combine a collection of FlatGeometry into a new FlatGeometry
+	 * @param entities
+	 * @return
+	 */
+	String combine(Collection<FlatGeometry> entities);
+
+	/**
+	 * Calculate the geometric union of source and overlay data in OperantionData
+	 * @param operationData
+	 * @return
+	 */
+	List<String> calculateOverlapedUnion(OperationData operationData);
+
 }

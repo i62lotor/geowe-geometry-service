@@ -18,10 +18,13 @@ package org.geowe.service.geometry.engine;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import org.geowe.service.model.FlatGeometry;
 import org.geowe.service.model.OperationData;
+
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.util.GeometryCombiner;
+import com.vividsolutions.jts.geom.util.LinearComponentExtracter;
 import com.vividsolutions.jts.precision.EnhancedPrecisionOp;
 
 /**
@@ -202,5 +205,41 @@ public class JTSGeoEngineer implements GeoEngineer {
 		}
 
 		return intersectedElements;
+	}
+	/*
+	 * (non-Javadoc)
+	 * @see org.geowe.service.geometry.engine.GeoEngineer#combine(java.util.Collection)
+	 */
+	@Override
+	public String combine(Collection<FlatGeometry> entities) {
+		final Geometry combinedGeometry = GeometryCombiner.combine(helper.toGeometries(entities));
+		return combinedGeometry.toText();
+	}
+	/*
+	 * (non-Javadoc)
+	 * @see org.geowe.service.geometry.engine.GeoEngineer#calculateOverlapedUnion(org.geowe.service.model.OperationData)
+	 */
+	//TODO: consider return flatGeometry
+	@Override
+	public List<String> calculateOverlapedUnion(OperationData operationData) {
+		
+
+		operationData.getSourceData().addAll(operationData.getOverlayData());
+		final List<Geometry> linesList = new ArrayList<Geometry>();
+		final LinearComponentExtracter lineFilter = new LinearComponentExtracter(
+				linesList);
+		for (final FlatGeometry flatGeometry : operationData.getSourceData()) {
+			final Geometry geom = helper.getGeom(flatGeometry.getWkt());
+			geom.apply(lineFilter);
+		}
+		LineNoder lineNoder = new LineNoder();
+		final Collection<Geometry> nodedLines = lineNoder.nodeLines(linesList);		
+		final Collection<Geometry> polys = lineNoder.polygonizer(nodedLines);
+
+		final List<String> overlapedUnionLayer = new ArrayList<String>();
+		for (final Geometry geom : polys) {
+			overlapedUnionLayer.add(geom.toText());
+		}
+		return overlapedUnionLayer;
 	}
 }
