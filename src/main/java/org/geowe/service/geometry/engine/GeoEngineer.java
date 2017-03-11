@@ -166,6 +166,6 @@ public interface GeoEngineer {
 	 * @param operationData
 	 * @return
 	 */
-	List<String> calculateOverlapedUnion(OperationData operationData);
+	List<FlatGeometry> calculateOverlapedUnion(OperationData operationData);
 
 }

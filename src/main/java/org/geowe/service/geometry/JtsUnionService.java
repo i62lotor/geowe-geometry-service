@@ -81,7 +81,7 @@ public class JtsUnionService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getUnionOverlap(@NotNull @Valid OperationData operationData) {
 		GeoEngineer geoEngineer = new JTSGeoEngineer();
-		List<String> elements = geoEngineer.calculateOverlapedUnion(operationData);
+		List<FlatGeometry> elements = geoEngineer.calculateOverlapedUnion(operationData);
 
 		return Response.status(Status.CREATED).entity(elements).build();
 	}

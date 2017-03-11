@@ -144,7 +144,7 @@ public class UnionTest {
 		Response response = target.request().post(
 				Entity.entity(opData,"application/json;charset=UTF-8"));
 
-		List<String> overlapedUnionGeometries = response.readEntity(new GenericType<List<String>>(){});
+		List<FlatGeometry> overlapedUnionGeometries = response.readEntity(new GenericType<List<FlatGeometry>>(){});
 		response.close();
 		log.info(overlapedUnionGeometries.size());
 		log.info(overlapedUnionGeometries);
@@ -159,7 +159,7 @@ public class UnionTest {
 		Response response = target.request().post(
 				Entity.entity(opData,"application/json;charset=UTF-8"));
 
-		List<String> overlapedUnionGeometries = response.readEntity(new GenericType<List<String>>(){});
+		List<FlatGeometry> overlapedUnionGeometries = response.readEntity(new GenericType<List<FlatGeometry>>(){});
 		response.close();
 		log.info(overlapedUnionGeometries.size());
 		log.info(overlapedUnionGeometries);
