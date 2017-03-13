@@ -28,6 +28,7 @@ import org.jboss.resteasy.spi.ReaderException;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.MultiPoint;
@@ -138,4 +139,18 @@ public class JTSGeoEngineerHelper {
 		return wkts;
 	}
 
+	 public Geometry splitPolygon(Geometry poly, Geometry line) {
+	      Geometry nodedLinework = poly.getBoundary().union(line);
+	      Geometry polys = new GeometryExtractor().polygonize(nodedLinework);
+
+	      // Only keep polygons which are inside the input
+	      List<Geometry> output = new ArrayList<Geometry>();
+	      for (int i = 0; i < polys.getNumGeometries(); i++) {
+	          Polygon candpoly = (Polygon) polys.getGeometryN(i);
+	          if (poly.contains(candpoly.getInteriorPoint())) {
+	              output.add(candpoly);
+	          }
+	      }
+	      return poly.getFactory().createGeometryCollection(GeometryFactory.toGeometryArray(output));
+	  }
 }

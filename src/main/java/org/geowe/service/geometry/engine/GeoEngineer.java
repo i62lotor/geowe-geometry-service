@@ -173,4 +173,15 @@ public interface GeoEngineer {
 	 */
 	List<FlatGeometry> calculateOverlapedUnion(OperationData operationData);
 
+	/**
+	 * Divide a collection of Polygons in source data with a line in overlay
+	 * data
+	 * @param operationData
+	 *            Operation data to calculate division. 
+	 *            operationData.source: polygons to divide
+	 *            operationData.overlay: division line
+	 * @return
+	 */
+	String dividePolygons(OperationData operationData);
+
 }

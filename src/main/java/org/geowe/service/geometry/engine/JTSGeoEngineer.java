@@ -24,6 +24,8 @@ import org.geowe.service.model.FlatGeometry;
 import org.geowe.service.model.OperationData;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.util.GeometryCombiner;
 import com.vividsolutions.jts.geom.util.LinearComponentExtracter;
 import com.vividsolutions.jts.precision.EnhancedPrecisionOp;
@@ -265,6 +267,15 @@ public class JTSGeoEngineer implements GeoEngineer {
 		}
 		
 		return overlapedUnionFlatGeometries;
+	}
+
+	@Override
+	public String dividePolygons(OperationData operationData) {
+		//TODO: verify that is a Polygon or Multipolygon
+		Geometry polygon = helper.getGeom(combine(operationData.getSourceData()));
+		//TODO: verify that is a linestring
+		Geometry line = helper.getGeom(combine(operationData.getOverlayData()));
+		return helper.splitPolygon(polygon, line).toString();
 	}
 
 }
