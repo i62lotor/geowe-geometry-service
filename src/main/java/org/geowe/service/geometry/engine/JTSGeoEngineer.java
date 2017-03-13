@@ -242,15 +242,8 @@ public class JTSGeoEngineer implements GeoEngineer {
 		final Collection<Geometry> polys = lineNoder.polygonizer(lineNoder.nodeLines(linesList));
 
 		final List<String> overlapedUnionWkts = getOverlapedPolygonsWkt(polys);
-		List<FlatGeometry> overlapedUnionFlatGeometries = helper.getFilledFlatGeometries(
-				operationData.getSourceData(), overlapedUnionWkts, 0.00001);
-		if (overlapedUnionFlatGeometries.size() != overlapedUnionWkts.size()) {
-			overlapedUnionWkts.remove(helper.getWkts(overlapedUnionFlatGeometries));
-			overlapedUnionFlatGeometries.addAll(
-					helper.getFilledFlatGeometries(operationData.getOverlayData(),
-							overlapedUnionWkts, 0.00001));
-		}
-		return overlapedUnionFlatGeometries;
+		
+		return getOverlapedUnionFlatGeometries(overlapedUnionWkts, operationData);
 	}
 
 	private List<String> getOverlapedPolygonsWkt(Collection<Geometry> polys) {
@@ -259,6 +252,19 @@ public class JTSGeoEngineer implements GeoEngineer {
 			wkts.add(geom.toText());
 		}
 		return wkts;
+	}
+	
+	private List<FlatGeometry> getOverlapedUnionFlatGeometries(List<String> overlapedUnionWkts,OperationData operationData){
+		List<FlatGeometry> overlapedUnionFlatGeometries = helper.getFilledFlatGeometries(
+				operationData.getSourceData(), overlapedUnionWkts, 0.00001);
+		if (overlapedUnionFlatGeometries.size() != overlapedUnionWkts.size()) {
+			overlapedUnionWkts.remove(helper.getWkts(overlapedUnionFlatGeometries));
+			overlapedUnionFlatGeometries.addAll(
+					helper.getFilledFlatGeometries(operationData.getOverlayData(),
+							overlapedUnionWkts, 0.00001));
+		}
+		
+		return overlapedUnionFlatGeometries;
 	}
 
 }

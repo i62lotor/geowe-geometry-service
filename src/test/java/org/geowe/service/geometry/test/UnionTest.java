@@ -139,7 +139,7 @@ public class UnionTest {
 	
 	@Test
 	public void overlapedUnionPolygonsFeatureCollectionElements(){
-		OperationData opData = DataTestProvider.getPolygonsFCIntersectionData();
+		OperationData opData = DataTestProvider.get2PolygonsOverlayFCData();
 		target = restClient.target(SERVICE_URL+"/overlaped");
 		Response response = target.request().post(
 				Entity.entity(opData,"application/json;charset=UTF-8"));
@@ -149,7 +149,7 @@ public class UnionTest {
 		log.info(overlapedUnionGeometries.size());
 		log.info(overlapedUnionGeometries);
 		Assert.isTrue(response.getStatus() == Status.CREATED.getStatusCode());
-		Assert.isTrue(overlapedUnionGeometries.size() == 20);
+		Assert.isTrue(overlapedUnionGeometries.size() == 21);
 	}
 	
 	@Test
@@ -161,8 +161,6 @@ public class UnionTest {
 
 		List<FlatGeometry> overlapedUnionGeometries = response.readEntity(new GenericType<List<FlatGeometry>>(){});
 		response.close();
-		log.info(overlapedUnionGeometries.size());
-		log.info(overlapedUnionGeometries);
 		Assert.isTrue(response.getStatus() == Status.CREATED.getStatusCode());
 		Assert.isTrue(overlapedUnionGeometries.size() == 2);
 	}
