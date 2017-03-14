@@ -18,14 +18,11 @@ package org.geowe.service.geometry.engine;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import org.geowe.service.model.FlatGeometry;
 import org.geowe.service.model.OperationData;
 
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.util.GeometryCombiner;
 import com.vividsolutions.jts.geom.util.LinearComponentExtracter;
 import com.vividsolutions.jts.precision.EnhancedPrecisionOp;
@@ -124,10 +121,8 @@ public class JTSGeoEngineer implements GeoEngineer {
 	 */
 
 	@Override
-	public List<FlatGeometry> calculateIntersectionElements(OperationData operationData, double tolerance) {
-		List<String> intersectedWkts = helper.getBasicGeometries(calculateIntersection(operationData, tolerance));
-
-		return helper.getFilledFlatGeometries(operationData.getSourceData(), intersectedWkts, tolerance);
+	public List<String> calculateIntersectionElements(OperationData operationData, double tolerance) {
+		return helper.getBasicGeometries(calculateIntersection(operationData, tolerance));
 	}
 
 	/*
@@ -155,9 +150,8 @@ public class JTSGeoEngineer implements GeoEngineer {
 	 * (org.geowe.service.model.OperationData, double)
 	 */
 	@Override
-	public List<FlatGeometry> calculateDifferenceElements(OperationData operationData, double tolerance) {
-		List<String> differencedWkts = helper.getBasicGeometries(calculateDifference(operationData, tolerance));
-		return helper.getFilledFlatGeometries(operationData.getSourceData(), differencedWkts, tolerance);
+	public List<String> calculateDifferenceElements(OperationData operationData, double tolerance) {
+		return helper.getBasicGeometries(calculateDifference(operationData, tolerance));
 	}
 
 	/*
@@ -185,9 +179,8 @@ public class JTSGeoEngineer implements GeoEngineer {
 	 * double)
 	 */
 	@Override
-	public List<FlatGeometry> calculateSymDifferenceElements(OperationData operationData, double tolerance) {
-		List<String> differencedWkts = helper.getBasicGeometries(calculateSymDifference(operationData, tolerance));
-		return helper.getFilledFlatGeometries(operationData.getSourceData(), differencedWkts, tolerance);
+	public List<String> calculateSymDifferenceElements(OperationData operationData, double tolerance) {
+		return helper.getBasicGeometries(calculateSymDifference(operationData, tolerance));
 	}
 
 	/*
@@ -229,9 +222,8 @@ public class JTSGeoEngineer implements GeoEngineer {
 	 * org.geowe.service.geometry.engine.GeoEngineer#calculateOverlapedUnion(org
 	 * .geowe.service.model.OperationData)
 	 */
-	// TODO: think a better solution for calculate Flat Geometries
 	@Override
-	public List<FlatGeometry> calculateOverlapedUnion(OperationData operationData) {
+	public List<String> calculateOverlapedUnion(OperationData operationData) {
 
 		operationData.getSourceData().addAll(operationData.getOverlayData());
 		final List<Geometry> linesList = new ArrayList<Geometry>();
@@ -243,9 +235,8 @@ public class JTSGeoEngineer implements GeoEngineer {
 		LineNoder lineNoder = new LineNoder();
 		final Collection<Geometry> polys = lineNoder.polygonizer(lineNoder.nodeLines(linesList));
 
-		final List<String> overlapedUnionWkts = getOverlapedPolygonsWkt(polys);
 		
-		return getOverlapedUnionFlatGeometries(overlapedUnionWkts, operationData);
+		return getOverlapedPolygonsWkt(polys);
 	}
 
 	private List<String> getOverlapedPolygonsWkt(Collection<Geometry> polys) {
@@ -256,26 +247,17 @@ public class JTSGeoEngineer implements GeoEngineer {
 		return wkts;
 	}
 	
-	private List<FlatGeometry> getOverlapedUnionFlatGeometries(List<String> overlapedUnionWkts,OperationData operationData){
-		List<FlatGeometry> overlapedUnionFlatGeometries = helper.getFilledFlatGeometries(
-				operationData.getSourceData(), overlapedUnionWkts, 0.00001);
-		if (overlapedUnionFlatGeometries.size() != overlapedUnionWkts.size()) {
-			overlapedUnionWkts.remove(helper.getWkts(overlapedUnionFlatGeometries));
-			overlapedUnionFlatGeometries.addAll(
-					helper.getFilledFlatGeometries(operationData.getOverlayData(),
-							overlapedUnionWkts, 0.00001));
-		}
-		
-		return overlapedUnionFlatGeometries;
-	}
-
+	/*
+	 * (non-Javadoc)
+	 * @see org.geowe.service.geometry.engine.GeoEngineer#dividePolygons(org.geowe.service.model.OperationData)
+	 */
 	@Override
-	public String dividePolygons(OperationData operationData) {
-		//TODO: verify that is a Polygon or Multipolygon
+	public List<String> dividePolygons(OperationData operationData) {
 		Geometry polygon = helper.getGeom(combine(operationData.getSourceData()));
-		//TODO: verify that is a linestring
 		Geometry line = helper.getGeom(combine(operationData.getOverlayData()));
-		return helper.splitPolygon(polygon, line).toString();
+		Geometry splitedPolygons = helper.splitPolygon(polygon, line); 
+				
+		return helper.getBasicGeometries(splitedPolygons.toText());
 	}
 
 }

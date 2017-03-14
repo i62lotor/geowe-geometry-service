@@ -15,9 +15,8 @@
  ******************************************************************************/
 package org.geowe.service.geometry;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -29,20 +28,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.geowe.service.filter.DivisionFilter;
 import org.geowe.service.geometry.engine.GeoEngineer;
 import org.geowe.service.geometry.engine.JTSGeoEngineer;
-import org.geowe.service.geometry.engine.JTSGeoEngineerHelper;
-import org.geowe.service.geometry.test.DivisionTest;
 import org.geowe.service.model.FlatGeometry;
 import org.geowe.service.model.OperationData;
-import org.jboss.logging.Logger;
+import org.geowe.service.model.mapper.FlatGeometryMapper;
 import org.jboss.resteasy.annotations.GZIP;
-
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.util.LineStringExtracter;
-import com.vividsolutions.jts.operation.polygonize.Polygonizer;
 
 /**
  * Rest end point for JTS Division operantions resources
@@ -53,17 +45,25 @@ import com.vividsolutions.jts.operation.polygonize.Polygonizer;
 @Path("/jts/division")
 public class JtsDivideService {
 
-	private final Logger log = Logger.getLogger(JtsDivideService.class);
 	
 	@Path("/polygons")
 	@POST
 	@GZIP
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
+	@DivisionFilter
 	public Response divide(@NotNull @Valid OperationData operationData) {
 		GeoEngineer geoEngineer = new JTSGeoEngineer();
+		List<String> dividedPolygons = geoEngineer.dividePolygons(operationData);
 		
-		return Response.status(Status.CREATED).entity(geoEngineer.dividePolygons(operationData)).build();
+		return Response.status(Status.CREATED)
+				.entity(getFlatGeometries(operationData.getSourceData(), dividedPolygons))
+				.build();
+	}
+	
+	private List<FlatGeometry> getFlatGeometries(Set<FlatGeometry> flatGeometries, List<String> wkts){
+		FlatGeometryMapper mapper = new FlatGeometryMapper();
+		return mapper.getFilledFlatGeometries(flatGeometries, wkts, 0.000001);
 	}
 	
 }

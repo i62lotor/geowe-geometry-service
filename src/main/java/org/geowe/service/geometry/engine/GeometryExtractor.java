@@ -67,12 +67,18 @@ public class GeometryExtractor {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Geometry polygonize(Geometry geometry) {
+	public Collection<Geometry> polygonize(Geometry geometry) {
 		List<Geometry> lines = LineStringExtracter.getLines(geometry);
 		Polygonizer polygonizer = new Polygonizer();
 		polygonizer.add(lines);
 		Collection<Geometry> polys = polygonizer.getPolygons();
-		Polygon[] polyArray = GeometryFactory.toPolygonArray(polys);
-		return geometry.getFactory().createGeometryCollection(polyArray);
+		return polys;
+		
+	}
+	
+	public Geometry createGeometryCollection(Collection<Geometry> geometries){
+		Geometry[] geomArray = GeometryFactory.toGeometryArray(geometries);
+		GeometryFactory factory = new GeometryFactory();
+		return factory.createGeometryCollection(geomArray);
 	}
 }
