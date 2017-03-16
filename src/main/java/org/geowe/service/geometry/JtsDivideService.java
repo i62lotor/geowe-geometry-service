@@ -16,7 +16,6 @@
 package org.geowe.service.geometry;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -31,9 +30,7 @@ import javax.ws.rs.core.Response.Status;
 import org.geowe.service.filter.DivisionFilter;
 import org.geowe.service.geometry.engine.GeoEngineer;
 import org.geowe.service.geometry.engine.JTSGeoEngineer;
-import org.geowe.service.model.FlatGeometry;
-import org.geowe.service.model.OperationData;
-import org.geowe.service.model.mapper.FlatGeometryMapper;
+import org.geowe.service.model.DivisionData;
 import org.jboss.resteasy.annotations.GZIP;
 
 /**
@@ -46,38 +43,34 @@ import org.jboss.resteasy.annotations.GZIP;
 public class JtsDivideService {
 
 	
-	@Path("/polygons")
+	@Path("/polygon")
 	@POST
 	@GZIP
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@DivisionFilter
-	public Response dividePolygons(@NotNull @Valid OperationData operationData) {
+	public Response dividePolygons(@NotNull @Valid DivisionData divisionData) {
 		GeoEngineer geoEngineer = new JTSGeoEngineer();
-		List<String> dividedPolygons = geoEngineer.dividePolygons(operationData);
+		List<String> dividedPolygons = geoEngineer.dividePolygon(divisionData);
 		
 		return Response.status(Status.CREATED)
-				.entity(getFlatGeometries(operationData.getSourceData(), dividedPolygons))
+				.entity(dividedPolygons)
 				.build();
 	}
 	
-	@Path("/lines")
+	
+	@Path("/line")
 	@POST
 	@GZIP
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@DivisionFilter
-	public Response divideLines(@NotNull @Valid OperationData operationData) {
+	public Response divideLine(@NotNull @Valid DivisionData divisionData) {
 		GeoEngineer geoEngineer = new JTSGeoEngineer();
-		List<String> dividedLines = geoEngineer.divideLines(operationData);
+		List<String> dividedLines = geoEngineer.divideLine(divisionData);
 		return Response.status(Status.CREATED)
-				.entity(getFlatGeometries(operationData.getSourceData(), dividedLines))
+				.entity(dividedLines)
 				.build();
-	}
-	
-	private List<FlatGeometry> getFlatGeometries(Set<FlatGeometry> flatGeometries, List<String> wkts){
-		FlatGeometryMapper mapper = new FlatGeometryMapper();
-		return mapper.getFilledFlatGeometries(flatGeometries, wkts, 0.000001);
 	}
 	
 }

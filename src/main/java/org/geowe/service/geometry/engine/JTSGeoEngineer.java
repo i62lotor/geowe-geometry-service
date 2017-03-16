@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.geowe.service.model.DivisionData;
 import org.geowe.service.model.FlatGeometry;
 import org.geowe.service.model.OperationData;
 
@@ -249,24 +250,25 @@ public class JTSGeoEngineer implements GeoEngineer {
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.geowe.service.geometry.engine.GeoEngineer#dividePolygons(org.geowe.service.model.OperationData)
+	 * @see org.geowe.service.geometry.engine.GeoEngineer#dividePolygons(org.geowe.service.model.DivisionData)
 	 */
 	@Override
-	public List<String> dividePolygons(OperationData operationData) {
-		Geometry polygon = helper.getGeom(combine(operationData.getSourceData()));
-		Geometry line = helper.getGeom(combine(operationData.getOverlayData()));
+	public List<String> dividePolygon(DivisionData divisionData) {
+		Geometry polygon = helper.getGeom(divisionData.getWktToDivide());
+		Geometry line = helper.getGeom(divisionData.getWktDivisionLine());
 		Geometry splitedPolygons = helper.splitPolygon(polygon, line); 
 				
 		return helper.getBasicGeometries(splitedPolygons.toText());
 	}
 
+	
 	@Override
-	public List<String> divideLines(OperationData operationData) {
-		Geometry sourceLines = helper.getGeom(combine(operationData.getSourceData()));
-		Geometry divisionLine = helper.getGeom(combine(operationData.getOverlayData()));
-		Geometry unionGeom = sourceLines.union(divisionLine);
+	public List<String> divideLine(DivisionData divisionData) {
+		Geometry sourceLine = helper.getGeom(divisionData.getWktToDivide());
+		Geometry divisionLine = helper.getGeom(divisionData.getWktDivisionLine());
+		Geometry unionGeom = sourceLine.union(divisionLine);
 		
-		return helper.splitLines(sourceLines, unionGeom);
+		return helper.splitLines(sourceLine, unionGeom);
 	}
-
+	
 }
