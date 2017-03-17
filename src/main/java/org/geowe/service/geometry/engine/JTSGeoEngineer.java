@@ -254,21 +254,33 @@ public class JTSGeoEngineer implements GeoEngineer {
 	 */
 	@Override
 	public List<String> dividePolygon(DivisionData divisionData) {
-		Geometry polygon = helper.getGeom(divisionData.getWktToDivide());
-		Geometry line = helper.getGeom(divisionData.getWktDivisionLine());
+		Geometry polygon = helper.getGeom(divisionData.getGeomToDivide().getWkt());
+		Geometry line = helper.getGeom(divisionData.getDivisionLine().getWkt());
 		Geometry splitedPolygons = helper.splitPolygon(polygon, line); 
 				
 		return helper.getBasicGeometries(splitedPolygons.toText());
 	}
 
-	
+	/*
+	 * (non-Javadoc)
+	 * @see org.geowe.service.geometry.engine.GeoEngineer#divideLine(org.geowe.service.model.DivisionData)
+	 */
 	@Override
 	public List<String> divideLine(DivisionData divisionData) {
-		Geometry sourceLine = helper.getGeom(divisionData.getWktToDivide());
-		Geometry divisionLine = helper.getGeom(divisionData.getWktDivisionLine());
+		Geometry sourceLine = helper.getGeom(divisionData.getGeomToDivide().getWkt());
+		Geometry divisionLine = helper.getGeom(divisionData.getDivisionLine().getWkt());
 		Geometry unionGeom = sourceLine.union(divisionLine);
 		
 		return helper.splitLines(sourceLine, unionGeom);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.geowe.service.geometry.engine.GeoEngineer#decompose(java.lang.String)
+	 */
+	@Override
+	public List<String> decompose(String wkt) {
+		return helper.getBasicGeometries(wkt);
 	}
 	
 }

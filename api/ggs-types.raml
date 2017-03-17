@@ -94,14 +94,13 @@ types:
 	DivisionData:
 		type: object
 		properties:
-			wktToDivide:
-				type: string				
-			wktDivisionLine:
-				type: string
-				
+			geomToDivide:
+				type: FlatGeometry				
+			divisionLine:
+				type: FlatGeometry
 		example:{
-			"wktToDivide":"POLYGON ((-5.9685606135835565 38.333782907228816,-3....))",
-			"wktDivisionLine":"LINESTRING (-6.210259817917375 38.259416305016615,...)"
+			"geomToDivide":{"id":"id-0",crs":"WGS84","wkt":"POLYGON((-4.7577667236328125 37.636202454188854,...))"},
+			"divisionLine":{"id":"id-0",crs":"WGS84","wkt":"LINESTRING (-6.210259817917375 38.259416305016615,...)"}
 		}
 
 	ErrorEntity:

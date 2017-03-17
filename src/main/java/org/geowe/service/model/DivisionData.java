@@ -19,10 +19,8 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 /**
- * This class represents Division DAta. It is responsible for storing the data
+ * This class represents Division Data. It is responsible for storing the data
  * to be operated
  * 
  * @author rafa@geowe.org
@@ -30,35 +28,36 @@ import org.hibernate.validator.constraints.NotEmpty;
  */
 public class DivisionData implements Serializable {
 
-	private static final long serialVersionUID = 4419249969903477601L;
+	
+	private static final long serialVersionUID = -1404198858027181877L;
+	
+	@NotNull
+	private FlatGeometry geomToDivide;
+	@NotNull
+	private FlatGeometry divisionLine;
 
-	@NotNull @NotEmpty
-	private String wktToDivide;
-	@NotNull @NotEmpty
-	private String wktDivisionLine;
-
-	public String getWktToDivide() {
-		return wktToDivide;
+	public FlatGeometry getGeomToDivide() {
+		return geomToDivide;
 	}
 
-	public void setWktToDivide(String wktToDivide) {
-		this.wktToDivide = wktToDivide;
+	public void setGeomToDivide(FlatGeometry geomToDivide) {
+		this.geomToDivide = geomToDivide;
 	}
 
-	public String getWktDivisionLine() {
-		return wktDivisionLine;
+	public FlatGeometry getDivisionLine() {
+		return divisionLine;
 	}
 
-	public void setWktDivisionLine(String wktDivisionLine) {
-		this.wktDivisionLine = wktDivisionLine;
+	public void setDivisionLine(FlatGeometry divisionLine) {
+		this.divisionLine = divisionLine;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((wktDivisionLine == null) ? 0 : wktDivisionLine.hashCode());
-		result = prime * result + ((wktToDivide == null) ? 0 : wktToDivide.hashCode());
+		result = prime * result + ((divisionLine == null) ? 0 : divisionLine.hashCode());
+		result = prime * result + ((geomToDivide == null) ? 0 : geomToDivide.hashCode());
 		return result;
 	}
 
@@ -71,21 +70,22 @@ public class DivisionData implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		DivisionData other = (DivisionData) obj;
-		if (wktDivisionLine == null) {
-			if (other.wktDivisionLine != null)
+		if (divisionLine == null) {
+			if (other.divisionLine != null)
 				return false;
-		} else if (!wktDivisionLine.equals(other.wktDivisionLine))
+		} else if (!divisionLine.equals(other.divisionLine))
 			return false;
-		if (wktToDivide == null) {
-			if (other.wktToDivide != null)
+		if (geomToDivide == null) {
+			if (other.geomToDivide != null)
 				return false;
-		} else if (!wktToDivide.equals(other.wktToDivide))
+		} else if (!geomToDivide.equals(other.geomToDivide))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "DivisionData [wktToDivide=" + wktToDivide + ", wktDivisionLine=" + wktDivisionLine + "]";
+		return "DivisionData [geomToDivide=" + geomToDivide + ", divisionLine=" + divisionLine + "]";
 	}
+
 }

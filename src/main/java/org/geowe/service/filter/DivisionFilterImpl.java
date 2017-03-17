@@ -18,13 +18,11 @@ package org.geowe.service.filter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.Provider;
@@ -63,15 +61,15 @@ public class DivisionFilterImpl implements ContainerRequestFilter {
 		
 		DivisionData opData = getBody(json);
 
-		String wktdivisionLine = opData.getWktDivisionLine();
+		String wktdivisionLine = opData.getDivisionLine().getWkt();
 		helper = new JTSGeoEngineerHelper();
 		if (!isWktLineString(wktdivisionLine)) {
 			buildErrorResponse(context, "overlay.must.be.line");
 		}
-		if(request.getPathInfo().contains("polygon") && !isWktPolygon(opData.getWktToDivide())){
+		if(request.getPathInfo().contains("polygon") && !isWktPolygon(opData.getGeomToDivide().getWkt())){
 			buildErrorResponse(context, "overlay.must.be.polygon");
 		}
-		if(request.getPathInfo().contains("line") && !isWktLineString(opData.getWktToDivide())){
+		if(request.getPathInfo().contains("line") && !isWktLineString(opData.getGeomToDivide().getWkt())){
 			buildErrorResponse(context, "overlay.must.be.line");
 		}
 		

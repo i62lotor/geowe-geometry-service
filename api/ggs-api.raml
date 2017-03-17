@@ -234,6 +234,16 @@ types: !include ggs-types.raml
 						application/json:
 							type: FlatGeometry[]
 	/division:
+		post:
+			description: Decomposes a Geometry (MultiGeometry wkt) into its basic geometries (Polygon, LineString and Point)
+			mediaType: application/json				
+			body:
+				type: FlatGeometry							
+			responses:
+				201: 
+					body:					
+						application/json:
+							type: FlatGeometry[]							
 		/polygon:				
 			post:
 				description: Calculates the divided polygons
@@ -244,8 +254,7 @@ types: !include ggs-types.raml
 					201: 
 						body:					
 							application/json:
-								type: String[]
-								description: a collection of WKT strings
+								type: FlatGeometry[]
 		/line:				
 			post:
 				description: Calculates the divided lines
@@ -256,5 +265,4 @@ types: !include ggs-types.raml
 					201: 
 						body:					
 							application/json:
-								type: String[]
-								description: a collection of WKT strings
+								type: FlatGeometry[]

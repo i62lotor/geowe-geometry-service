@@ -177,21 +177,26 @@ public interface GeoEngineer {
 	List<String> calculateOverlapedUnion(OperationData operationData);
 
 	/**
-	 * Divide a collection of Polygons in source data with a line in overlay
-	 * data
+	 * Divide a Polygon 
 	 * 
-	 * @param operationData
-	 *            Operation data to calculate division. operationData.source:
-	 *            polygons to divide. operationData.overlay: division line
+	 * @param divisionData
 	 * @return
 	 */
 	List<String> dividePolygon(DivisionData divisionData);
-	
+
 	/**
 	 * Divide a LineString
+	 * 
 	 * @param divisionData
 	 * @return
 	 */
 	List<String> divideLine(DivisionData divisionData);
+	
+	/**
+	 * Decompones a Multi Geometry into its basic geometries
+	 * @param flatGeometry
+	 * @return
+	 */
+	List<String> decompose(String wkt);
 
 }
