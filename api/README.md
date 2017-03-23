@@ -88,6 +88,7 @@ You can also download [api-use-cases.html](api-use-cases.html) for usage example
 **Request Body**: (`org.geowe.service.model.OperationData`)
 
 `{"overlayData":[{"crs":"string","id":"string","wkt":"string"}],"sourceData":[{"crs":"string","id":"string","wkt":"string"}]}`
+
 **Query Param**: `tolerance`, `double`
 
 ### Response
@@ -199,6 +200,7 @@ You can also download [api-use-cases.html](api-use-cases.html) for usage example
 **Request Body**: (`org.geowe.service.model.OperationData`)
 
 `{"overlayData":[{"crs":"string","id":"string","wkt":"string"}],"sourceData":[{"crs":"string","id":"string","wkt":"string"}]}`
+
 **Query Param**: `tolerance`, `double`
 
 ### Response
@@ -222,6 +224,7 @@ You can also download [api-use-cases.html](api-use-cases.html) for usage example
 **Request Body**: (`org.geowe.service.model.OperationData`)
 
 `{"overlayData":[{"crs":"string","id":"string","wkt":"string"}],"sourceData":[{"crs":"string","id":"string","wkt":"string"}]}`
+
 **Query Param**: `tolerance`, `double`
 
 ### Response
