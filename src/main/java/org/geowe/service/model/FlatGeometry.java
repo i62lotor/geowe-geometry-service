@@ -19,6 +19,7 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
+import org.geowe.service.constraints.CheckTopology;
 import org.hibernate.validator.constraints.NotBlank;
 
 /**
@@ -38,6 +39,7 @@ public class FlatGeometry implements Serializable{
 
 	@NotNull
 	@NotBlank
+	@CheckTopology
 	private String wkt;
 
 	public FlatGeometry(){
