@@ -13,32 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.geowe.service.constraints;
+package org.geowe.service.geometry.validation;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import java.util.Set;
 
-import org.geowe.service.geometry.engine.JTSGeoEngineerHelper;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+
+import org.geowe.service.constraints.TopologyGroup;
+import org.geowe.service.model.FlatGeometry;
 
 /**
- * Topology validator. Tests whether the Geometry for an WKT is topologically
- * valid, according to the OGC SFS specification.
+ * Represents a geometry validator. Is responsible for the validation of
+ * geometries
  * 
  * @author rafa@geowe.org
  *
  */
-public class TopologyValidator implements ConstraintValidator<ValidTopology, String> {
+public class GeometryValidator {
 
-	private JTSGeoEngineerHelper helper;
+	public Set<ConstraintViolation<FlatGeometry>> hasTopologyErros(FlatGeometry flatGeometry) {
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
 
-	@Override
-	public void initialize(ValidTopology constraintAnnotation) {
-		helper = new JTSGeoEngineerHelper();
-	}
+		Set<ConstraintViolation<FlatGeometry>> constraintsViolations = validator.validate(flatGeometry, TopologyGroup.class);
 
-	@Override
-	public boolean isValid(String wkt, ConstraintValidatorContext context) {
-		return helper.getGeom(wkt).isValid();
+		return constraintsViolations;
 	}
 
 }

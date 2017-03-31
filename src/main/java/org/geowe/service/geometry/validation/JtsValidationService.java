@@ -15,13 +15,12 @@
  ******************************************************************************/
 package org.geowe.service.geometry.validation;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import javax.validation.constraints.NotNull;
 import javax.validation.executable.ValidateOnExecution;
 import javax.ws.rs.Consumes;
@@ -33,36 +32,48 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.geowe.service.model.FlatGeometry;
-import org.jboss.logging.Logger;
+import org.geowe.service.model.ValidationErrorData;
+import org.geowe.service.model.ValidationResult;
 import org.jboss.resteasy.annotations.GZIP;
 
 /**
- * Rest end point for JTS resources
+ * Rest end point for JTS validation geometries resources
  * 
- * @author lotor
+ * @author rafa@geowe.org
  *
  */
 @Path("/jts/validation")
 public class JtsValidationService {
 
-	private final Logger log = Logger.getLogger(JtsValidationService.class);
 	@POST
 	@GZIP
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ValidateOnExecution
 	public Response validate(@NotNull @Valid FlatGeometry flatGeometry) {
-		log.info("VALIDATION RESOURCE");
-		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-		Validator validator = factory.getValidator();
-		
-		Set<ConstraintViolation<String>> constraintViolations =
-		        validator.validate(flatGeometry.getWkt());
-		log.info("VALIDATION RESOURCE 2 "+ constraintViolations.size());
-		
-		return Response.status(Status.CREATED).entity(constraintViolations).build();
+		Set<ConstraintViolation<FlatGeometry>> errors = new GeometryValidator().hasTopologyErros(flatGeometry);
+
+		return Response.status(Status.CREATED).entity(buildValidationResult(errors, flatGeometry)).build();
 	}
 
+	private ValidationResult buildValidationResult(Set<ConstraintViolation<FlatGeometry>> constraintViolations,
+			FlatGeometry flatGeometry) {
 
+		ValidationResult result = new ValidationResult();
+		
+		result.setValid(constraintViolations.isEmpty());
+		result.setValidatedFlatGeometry(flatGeometry);
+		result.setErrors(getValidationErrorData(constraintViolations));
+
+		return result;
+	}
+	
+	private List<ValidationErrorData> getValidationErrorData(Set<ConstraintViolation<FlatGeometry>> constraintViolations){
+		return constraintViolations.stream()
+				.map(constraintViolation -> new ValidationErrorData(
+						(int) constraintViolation.getConstraintDescriptor().getAttributes().get("errorCode"),
+						constraintViolation.getMessage()))
+				.collect(Collectors.toList());
+	}
 
 }

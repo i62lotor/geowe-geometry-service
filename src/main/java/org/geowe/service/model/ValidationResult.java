@@ -27,17 +27,18 @@ import java.util.List;
 public class ValidationResult implements Serializable {
 
 
-	private static final long serialVersionUID = 7523296227095064779L;
-	private boolean isValid;
+	private static final long serialVersionUID = -7546966370178181715L;
+	private boolean valid;
 	private FlatGeometry validatedFlatGeometry;
-	private List<ValidationError> errors = new ArrayList<ValidationResult.ValidationError>();
+	
+	private List<ValidationErrorData> errors = new ArrayList<ValidationErrorData>();
 
 	public boolean isValid() {
-		return isValid;
+		return valid;
 	}
 
 	public void setValid(boolean isValid) {
-		this.isValid = isValid;
+		this.valid = isValid;
 	}
 
 	public FlatGeometry getValidatedFlatGeometry() {
@@ -48,26 +49,24 @@ public class ValidationResult implements Serializable {
 		this.validatedFlatGeometry = validatedFlatGeometry;
 	}
 
-	public List<ValidationError> getErrors() {
+	public List<ValidationErrorData> getErrors() {
 		return errors;
 	}
 
-	public void setErrors(List<ValidationError> errors) {
+	public void setErrors(List<ValidationErrorData> errors) {
 		this.errors = errors;
 	}
-	
-	public void addValidationError(ValidationError error){
+
+	public void addValidationError(ValidationErrorData error){
 		errors.add(error);
 	}
 	
-	
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((errors == null) ? 0 : errors.hashCode());
-		result = prime * result + (isValid ? 1231 : 1237);
+		result = prime * result + (valid ? 1231 : 1237);
 		result = prime * result + ((validatedFlatGeometry == null) ? 0 : validatedFlatGeometry.hashCode());
 		return result;
 	}
@@ -86,7 +85,7 @@ public class ValidationResult implements Serializable {
 				return false;
 		} else if (!errors.equals(other.errors))
 			return false;
-		if (isValid != other.isValid)
+		if (valid != other.valid)
 			return false;
 		if (validatedFlatGeometry == null) {
 			if (other.validatedFlatGeometry != null)
@@ -96,44 +95,10 @@ public class ValidationResult implements Serializable {
 		return true;
 	}
 
-
-
 	@Override
 	public String toString() {
-		return "ValidationResult [isValid=" + isValid + ", validatedFlatGeometry=" + validatedFlatGeometry + ", errors="
+		return "ValidationResult [isValid=" + valid + ", validatedFlatGeometry=" + validatedFlatGeometry + ", errors="
 				+ errors + "]";
 	}
 
-
-	/**
-	 * Represents an error in validation
-	 * @author rafa@geowe.org
-	 *
-	 */
-	public class ValidationError {
-		private int id;
-		private String description;
-
-		public int getId() {
-			return id;
-		}
-
-		public void setId(int id) {
-			this.id = id;
-		}
-
-		public String getDescription() {
-			return description;
-		}
-
-		public void setDescription(String description) {
-			this.description = description;
-		}
-
-		@Override
-		public String toString() {
-			return "ValidationError [id=" + id + ", description=" + description + "]";
-		}
-		
-	}
 }
