@@ -121,6 +121,7 @@ public class ValidationTest {
 				Entity.entity(new FlatGeometry(), "application/json;charset=UTF-8"));
 		ErrorEntity error = response.readEntity(ErrorEntity.class);
 		response.close();
+		log.info(error);
 		Assert.isTrue(
 				response.getStatus() == Status.BAD_REQUEST.getStatusCode(),
 				error.toString());

@@ -29,8 +29,7 @@ import javax.validation.Payload;
 @Constraint(validatedBy = TopologyValidator.class)
 @Documented
 public @interface ValidTopology {
-	//TODO: externalize message
-	String message() default "Topological Error";
+	String message() default "{topology.error}";
 
 	Class<?>[] groups() default {};
 

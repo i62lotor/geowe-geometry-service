@@ -29,8 +29,7 @@ import javax.validation.Payload;
 @Constraint(validatedBy = SimpleGeometryValidator.class)
 @Documented
 public @interface SimpleGeometry {
-	//TODO: externalize message
-	String message() default "The wkt generate a non Simple Geometry";
+	String message() default "{simple.geometry.error}";
 
 	Class<?>[] groups() default {};
 
