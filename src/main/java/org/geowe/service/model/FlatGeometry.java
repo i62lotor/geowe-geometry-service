@@ -19,7 +19,7 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
-import org.geowe.service.constraints.GeometryValidationGroup;
+import org.geowe.service.constraints.DuplicateVertex;
 import org.geowe.service.constraints.SimpleGeometry;
 import org.geowe.service.constraints.SimplicityGroup;
 import org.geowe.service.constraints.TopologyGroup;
@@ -45,6 +45,7 @@ public class FlatGeometry implements Serializable{
 	@NotBlank
 	@ValidTopology(groups={TopologyGroup.class})
 	@SimpleGeometry(groups={SimplicityGroup.class})
+	@DuplicateVertex(groups={TopologyGroup.class})
 	private String wkt;
 
 	public FlatGeometry(){
