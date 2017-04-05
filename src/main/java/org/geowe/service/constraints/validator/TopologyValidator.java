@@ -13,35 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.geowe.service.constraints;
+package org.geowe.service.constraints.validator;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import org.geowe.service.constraints.ValidTopology;
 import org.geowe.service.geometry.engine.JTSGeoEngineerHelper;
 
 /**
- * Tests whether this Geometry is simple. The SFS definition of simplicity
- * follows the general rule that a Geometry is simple if it has no points of
- * self-tangency, self-intersection or other anomalous points. Simplicity is
- *
- * See JTS geometry.isSimple javadoc
- *  
+ * Topology validator. Tests whether the Geometry for an WKT is topologically
+ * valid, according to the OGC SFS specification.
+ * 
  * @author rafa@geowe.org
  *
  */
-public class SimpleGeometryValidator implements ConstraintValidator<SimpleGeometry, String> {
+public class TopologyValidator implements ConstraintValidator<ValidTopology, String> {
 
 	private JTSGeoEngineerHelper helper;
 
 	@Override
-	public void initialize(SimpleGeometry constraintAnnotation) {
+	public void initialize(ValidTopology constraintAnnotation) {
 		helper = new JTSGeoEngineerHelper();
 	}
 
 	@Override
 	public boolean isValid(String wkt, ConstraintValidatorContext context) {
-		return helper.getGeom(wkt).isSimple();
+		return helper.getGeom(wkt).isValid();
 	}
 
 }

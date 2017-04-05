@@ -13,48 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.geowe.service.constraints;
+package org.geowe.service.constraints.validator;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import org.geowe.service.constraints.SimpleGeometry;
 import org.geowe.service.geometry.engine.JTSGeoEngineerHelper;
 
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.operation.valid.RepeatedPointTester;
-
 /**
- * Tests whether this Geometry has repeated vertex.
- * 
+ * Tests whether this Geometry is simple. The SFS definition of simplicity
+ * follows the general rule that a Geometry is simple if it has no points of
+ * self-tangency, self-intersection or other anomalous points. Simplicity is
+ *
+ * See JTS geometry.isSimple javadoc
+ *  
  * @author rafa@geowe.org
  *
  */
-public class DuplicateVertexValidator implements ConstraintValidator<DuplicateVertex, String> {
+public class SimpleGeometryValidator implements ConstraintValidator<SimpleGeometry, String> {
 
 	private JTSGeoEngineerHelper helper;
-	private RepeatedPointTester repeatedPointTester;
 
 	@Override
-	public void initialize(DuplicateVertex constraintAnnotation) {
+	public void initialize(SimpleGeometry constraintAnnotation) {
 		helper = new JTSGeoEngineerHelper();
-		repeatedPointTester = new RepeatedPointTester();
-		
 	}
 
 	@Override
 	public boolean isValid(String wkt, ConstraintValidatorContext context) {
-
-		boolean hasRepeatedPoint = repeatedPointTester.hasRepeatedPoint(helper.getGeom(wkt));
-		if (hasRepeatedPoint) {
-			context.disableDefaultConstraintViolation();
-			Point repeatedPoint = new GeometryFactory().createPoint(repeatedPointTester.getCoordinate());
-			context.buildConstraintViolationWithTemplate(
-					context.getDefaultConstraintMessageTemplate() + ": " + repeatedPoint.toText())
-					.addConstraintViolation();
-		}
-
-		return !hasRepeatedPoint;
+		return helper.getGeom(wkt).isSimple();
 	}
 
 }

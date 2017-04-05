@@ -13,32 +13,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.geowe.service.constraints;
+package org.geowe.service.constraints.validator;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import org.geowe.service.constraints.DuplicateVertex;
 import org.geowe.service.geometry.engine.JTSGeoEngineerHelper;
 
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.operation.valid.RepeatedPointTester;
+
 /**
- * Topology validator. Tests whether the Geometry for an WKT is topologically
- * valid, according to the OGC SFS specification.
+ * Tests whether this Geometry has repeated vertex.
  * 
  * @author rafa@geowe.org
  *
  */
-public class TopologyValidator implements ConstraintValidator<ValidTopology, String> {
+public class DuplicateVertexValidator implements ConstraintValidator<DuplicateVertex, String> {
 
 	private JTSGeoEngineerHelper helper;
+	private RepeatedPointTester repeatedPointTester;
 
 	@Override
-	public void initialize(ValidTopology constraintAnnotation) {
+	public void initialize(DuplicateVertex constraintAnnotation) {
 		helper = new JTSGeoEngineerHelper();
+		repeatedPointTester = new RepeatedPointTester();
+		
 	}
 
 	@Override
 	public boolean isValid(String wkt, ConstraintValidatorContext context) {
-		return helper.getGeom(wkt).isValid();
+
+		boolean hasRepeatedPoint = repeatedPointTester.hasRepeatedPoint(helper.getGeom(wkt));
+		if (hasRepeatedPoint) {
+			context.disableDefaultConstraintViolation();
+			Point repeatedPoint = new GeometryFactory().createPoint(repeatedPointTester.getCoordinate());
+			context.buildConstraintViolationWithTemplate(
+					context.getDefaultConstraintMessageTemplate() + ": " + repeatedPoint.toText())
+					.addConstraintViolation();
+		}
+
+		return !hasRepeatedPoint;
 	}
 
 }
