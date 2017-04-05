@@ -389,7 +389,7 @@ Until you have a better documentation you can consult the definition of the serv
 
 **Query Param**: `validate`, `string`
 
-`all`,`topology`,`simplicity`
+`all`,`topology`,`simplicity`,`orientation`
 
 ### Response
 
