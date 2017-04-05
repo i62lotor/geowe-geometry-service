@@ -9,6 +9,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Geometry validations
 - Asynchronous tasks
 
+## [0.9.4]SNAPSHOT - 2017-04-05
+
+### Added
+- Queryparam (validate) for Geometry validation resource, to choose validation type to perform
+- Suported validations: JTS valid, JTS simple, repeated coordinates
+
 ## [0.9.0]SNAPSHOT - 2017-03-31
 
 ### Added
